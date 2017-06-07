@@ -1,7 +1,8 @@
 import mammoth
 import os
-path=r'C:\temp\Cтелазин.психология'
-save_path=r'C:\temp\Cтелазин.психология\save'
+path=r'C:\temp\психология'
+save_path=r'C:\temp\психология\save'
+#adding navigation links and header
 beg='<a href=README.md><img src="../img/back.jpg" width="50" height="50" /></a><p><h1>%s</h1></p><p>'
 end='<a href=README.md><img src="../img/back.jpg" width="50" height="50" /></a>'
 
