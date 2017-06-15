@@ -2,6 +2,8 @@
 This python code wraps sql query and passes it to SQL Plus with cmd.
 SQL query must not contain skip rows.
 
+[sample](sql_plus_sample.ipynb)
+
 ## methods
 * set_sql_query(query_params={},sql_path=None,query=None)\
   * query_params - promts in your query
