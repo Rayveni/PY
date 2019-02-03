@@ -1,0 +1,1 @@
+{"driver": "mongo", "host": null, "port": null, "schema_name": "exchange_operations", "db_name": "exchange_operations", "accounts_info": "accounts_descr", "accounts": "accounts", "documents": "documents", "transactions": "transactions", "variables": "variables"}
