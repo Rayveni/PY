@@ -75,3 +75,16 @@ class MongoDriver():
         if dataframe:
             res=DataFrame(res)
         return res
+
+    def get_element(self,table,column,value):
+        collection=getattr(self,table)
+        res=collection.find_one({column:value})
+        return res	
+		
+    def update_element(self,table,search_column,search_value,dict_with_new_values):
+        collection=getattr(self,table)
+        collection.update_one({search_column:search_value},{'$set':dict_with_new_values})  	
+		
+    def delete_element(self,table,search_column,search_value):
+        collection=getattr(self,table)
+        collection.delete_one({search_column:search_value})  				

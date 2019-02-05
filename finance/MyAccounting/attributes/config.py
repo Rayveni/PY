@@ -1,7 +1,7 @@
 class config():
     __slots__ ='data'
     def __init__(self,driver:str,db_name: str,variables: str,accounts_info :str 
-                 ,accounts: str ,documents: str,transactions: str,schema_name=None,host=None,port=None):
+                 ,accounts: str ,documents: str,transactions: str,exchange_rate: str,currency :str,schema_name=None,host=None,port=None):
         self.data={}
         flg=True
         for input_var in (driver,db_name,accounts_info,accounts,documents,transactions,variables):
@@ -20,3 +20,5 @@ class config():
             self.data['documents']=documents
             self.data['transactions']=transactions
             self.data['variables']=variables
+            self.data['currency']=currency
+            self.data['exchange_rate']=exchange_rate

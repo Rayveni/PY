@@ -54,8 +54,15 @@ class MyAccounting():
             self.config_empty=False
             self.__load_config()
 
-    def add_account(self,account_number :str,account_descr_short :str,account_descr_long :str,account_parrent:int =None):
-        acc=accounts_info(account_number,account_descr_short,account_descr_long,account_parrent)
+    def add_account(self,account_number :str,account_descr_short :str,account_descr_long :str,account_parent :str =None):
+        account_parent_id=None
+        if account_parent:
+            parent=self.driver.get_element('accounts_info','account_number',account_parent )
+            if parent is None:
+                print('No parent account found')
+                return None
+            account_parent_id=parent['account_id']
+        acc=accounts_info(account_number,account_descr_short,account_descr_long,account_parent_id)
         res=self.driver.add_row('accounts_info',acc)
         if res[0]:
             print('success')
