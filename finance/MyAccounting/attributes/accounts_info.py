@@ -4,6 +4,5 @@ class accounts_info():
         self.account_number=account_number
         self.account_descr_short=account_descr_short
         self.account_descr_long=account_descr_long
-        self.account_parent =account_parent 
-		
+        self.account_parent =account_parent 	
 
