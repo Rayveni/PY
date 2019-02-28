@@ -1,12 +1,9 @@
 #http://iss.moex.com/iss/reference/
 #http://iss.moex.com/iss/securitygroups/stock_index/collections
-from pytesseract import image_to_string
 import requests
 import pandas as pd
 from multiprocessing.dummy import Pool
 from functools import partial
-from PIL import Image,ImageEnhance,ImageFilter
-from io import BytesIO
 
 class mosex:
     __slots__ = ['base_url','references_dict','return_data_type','error']
@@ -95,11 +92,6 @@ class mosex:
         s.close()
         return res
     
-    def download_image(self,url):
-        response = requests.get(url)
-        img = Image.open(BytesIO(response.content))
-        return img
-    
     def industry_indices_list(self,img):
         start_point=(41,66)
         step_params=(154,20)
@@ -110,18 +102,6 @@ class mosex:
                         ,start_point[1]+(i+1)*step_params[1])) 
                 for i in range(n_chunks)]
         return chunks
-    
-    def recognize_text(self,img):
-        file = BytesIO()
-        img=PIL.ImageEnhance.Sharpness (img.convert('RGB'))
-        img_converted = img.filter(ImageFilter.MedianFilter())
-        enhancer = ImageEnhance.Contrast(img_converted)
-        img_converted=enhancer.enhance(2)
-        
-        img_converted=img_converted.convert('1')
-        img_converted.save(file, 'png')
-        img_converted= Image.open(file)
-        return image_to_string(img_converted,lang='eng')
     
     def get_security_spec(self,security_spec):
         r=self.query('security_spec',{'security':security_spec})
