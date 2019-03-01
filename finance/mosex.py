@@ -116,6 +116,17 @@ class mosex:
         df['actual_flg']=df.till.apply(lambda t:True if t==actual_date else False)		
 
         return df
+    def actual_index_list_dollar(self):
+        index_list=self.get_index_list()
+        print('is actual on ' +str (max(index_list.till)))
+        return index_list[(index_list.actual_flg==True)&(index_list.dollar==True)].reset_index(drop=True)
+		
+    def plot_index(self,index):
+        hist=self.security_hist(index,'stock','index',n_threads=1,date_from='2016-01-01')
+
+        hist['TRADEDATE']=pd.to_datetime(hist['TRADEDATE'])
+        hist.set_index('TRADEDATE',inplace=True)
+        hist['CLOSE'].plot(figsize=(15,4),title=hist.NAME.iloc[0]); 		
 #iis.__url_construct('security_spec',{'security':'RTSog'})
 #r=iis.query('security_spec',{'security':'RTSog'})
 #r=iis.security_hist('RTSog','stock','index',n_threads=7)
