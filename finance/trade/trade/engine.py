@@ -2,7 +2,7 @@ from os import path
 from datetime import datetime,timedelta
 import json
 import pandas as pd
-from trade.externaldata import smartlab
+from trade.externaldata import smartlab,openbroker
 
 class engine:
     def __init__(self,config_path,date_format='%Y-%m-%d'):
@@ -101,3 +101,6 @@ class engine:
             bonds[currency]=df
 		
         return bonds
+		
+    def openbroker(self,file_path):
+        return openbroker(file_path)		
