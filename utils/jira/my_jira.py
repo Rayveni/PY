@@ -7,7 +7,13 @@ from pandas import DataFrame
 from json import dumps
 
 class my_jira:
-    def __init__(self,server:str,auth:tuple,api_version:str=r'/rest/api/2/',agile_api_version:str=r'/rest/agile/1.0/',verify_cert:bool=True):
+    def __init__(self,server:str,
+                 auth_type:str,#token, login_password"
+                 auth_data,
+                 api_version:str=r'/rest/api/2/',
+                 agile_api_version:str=r'/rest/agile/1.0/',
+                 verify_cert:bool=True
+                ):
         self.api_version,self.agile_api_version=api_version,agile_api_version
         self.server=server
         self.verify_cert=verify_cert
@@ -31,15 +37,18 @@ class my_jira:
                                       }
                         
                        }
-        self.__session(auth)
+        self.__session(auth_type,auth_data)
 
-    def __session(self,auth:tuple):
+    def __session(self,auth_type:str,auth_data):
         self.session=Session()
-        self.session.headers.update({"content-type": "application/json"})
-        self.session.auth=tuple(auth)
-
-
-
+        headers={"content-type": "application/json"}
+        if auth_type=='login_password':
+            self.session.headers.update(headers)
+            self.session.auth=tuple(auth)
+        else:
+            headers.update({'Authorization': 'Bearer {token}'.format(token=auth_data)})
+            self.session.headers.update(headers)
+            
        
     def _url(self,endpoint:str,api_version:str=None):
         if api_version is None:
