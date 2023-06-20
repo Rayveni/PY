@@ -345,6 +345,7 @@ class my_jira_reports(my_jira):
         res["status"] = fields["status"]["name"]
         res["status_category"] = fields["status"]["statusCategory"]["name"]
         res['labels'] = fields['labels']
+        res['epic_link']=fields[issue_info_config["epic_field"]]
 
         res["timeestimate"] = fields["timeestimate"]
         if res["timeestimate"] is not None:
@@ -553,21 +554,72 @@ class my_jira_reports(my_jira):
             report_issues.append(_extracted_issue)
         return report_issues
 
-    def process_not_done_reports(self, issues: list) -> list:
+    def process_not_done_reports(self, issues: list,save_path:str):
         """exports end of sprint statictics
 
         Args:
             issues (list): jira tasks in json format
+            save_path:
 
         Returns:
-            list: pivot tables in issue_type and status dimensions
+            dataframe
         """
         df = DataFrame(issues)
-        df['priority'] = df['priority'].apply(lambda s: 'Hight' if s in (
-            'Высокий', 'Критичный') else 'Low')
+        df['priority'] = df['priority'].apply(lambda s: 'Hight_priority' if s in (
+            'Высокий', 'Критичный') else 'Low_priority')
+        
+        def _report(issue_type,priority,component,status):
+            if not component:
+                component=None
+            elif 'Backend' in component:
+                component='Backend'
+            elif 'Frontend' in component:
+                component='Frontend'
+            else:
+                component=None
+            if issue_type=='Аналитика':
+                res=f"{issue_type}_{priority}"
+            elif issue_type in ('Задача','Подзадача'):
+                res=f"Задача_{component}_{status}"
+            elif issue_type in ('Ошибка','Ошибка (подзадача)'):
+                res=f"Bug_{component}_{priority}" 
+            else:
+                res=None
+            return res
+        df['report']=df[['issue_type','priority','components','status']].apply(lambda row:_report(*row),axis=1)
+        pt_status = df.pivot_table(
+            index='report', values='key', aggfunc=len, fill_value=0)
+        """
         pt_issue_type = df.pivot_table(index='issue_type', values='key', columns='priority',
                                        aggfunc=len, margins=True, margins_name='Total', fill_value=0)
 
         pt_status = df.pivot_table(
             index='status', values='key', aggfunc=len, margins=True, margins_name='Total', fill_value=0)
-        return pt_issue_type, pt_status
+        
+        
+            with pd.ExcelWriter(f"{save_path}{sprint}.{len(file_list)}.xlsx") as writer:
+                res_df.to_excel(writer, sheet_name='main',index=False)
+        """
+        
+        pt_status.columns=['count']
+        pt_status.to_excel(save_path)
+        return pt_status
+    def make_clickable(self,val:str):
+        return f'<a href="{self.server}/browse/{val}" target="_blank">{val}</a>'
+    
+    def changelog_time_delta_days(self,changelog:list,search_status:str)->float:
+        """seach in changelog(ordered list) issue status and return timedelta with next status
+
+        Args:
+            changelog (list): ordered list
+            search_status (str): issue transition status, e.g.:'In Progress','In testing'
+
+        Returns:
+            float: time in seconds converted to days
+        """
+        for i,_el in enumerate(changelog):
+            if _el[1]==search_status:
+                delta=changelog[i+1][0]-_el[0]
+                return delta.days+delta.seconds/86400
+    
+
