@@ -1,1 +1,3 @@
-{"server": "", "auth": ["login", "pswd"], "team": ["Kte", "Rmn"],"verify":"False"}
+{"server": "https://jira.", "auth": ["", ""], "team": ["Kte", "Rmn"],
+"token":"ODU3NTg4NjM2ODAzOuMwol5sttcy1TD6XWy/yiC40N79",
+"verify":"True"}
