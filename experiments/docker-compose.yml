@@ -1,0 +1,22 @@
+version: "3.91"
+services:
+  app:
+    build:
+      context: ./backend/ 
+      dockerfile: Dockerfile      
+    image: local_image/tg_bot       
+    environment:
+      - TZ=${timezone}
+      - tg_secret=${tg_secret}
+      - app_logs=/app/logs   
+      - log_level=${log_level}                     
+    volumes: 
+      - type: bind
+        source: ${code_source}
+        target: /app/backend   
+      - type: bind
+        source: ${logs_dir}
+        target: /app/logs         
+    command: python _main_.py           
+    ports:
+      - "${app_ports}"
